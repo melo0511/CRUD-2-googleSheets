@@ -1,0 +1,19 @@
+<div *ngIf="data; else dataExists">
+    <h1>No hay clientes para mostrar</h1>
+</div>
+
+<ng-template #dataExists>
+    <h2>Clientes</h2>
+    <div *ngFor="let detalles of listPeople,let i = index">
+        <p>{{detalles}}</p>
+        <button (click)="deletePerson(i)">Eliminar</button>
+    </div>
+</ng-template>
+
+<h2>Crear cliente</h2>
+
+<input [(ngModel)]="inputValue1" placeholder="Servicio" />
+<input [(ngModel)]="inputValue2" placeholder="Identificación" />
+<input [(ngModel)]="inputValue3" placeholder="Nombre" />
+<input [(ngModel)]="inputValue4" placeholder="Dirección" />
+<button (click)="createData()">Guardar</button>
