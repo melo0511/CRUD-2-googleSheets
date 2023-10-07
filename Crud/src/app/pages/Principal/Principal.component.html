@@ -1,19 +1,65 @@
-<div *ngIf="data; else dataExists">
-    <h1>No hay clientes para mostrar</h1>
-</div>
+<header>
+    <h1>Administración de clientes</h1>
+    <img src="https://static.wixstatic.com/media/632b1b_7a7cfc03c37641d08c03c1e93378328d~mv2.png/v1/fill/w_900,h_589,al_c/632b1b_7a7cfc03c37641d08c03c1e93378328d~mv2.png"
+        alt="">
+</header>
 
-<ng-template #dataExists>
-    <h2>Clientes</h2>
-    <div *ngFor="let detalles of listPeople,let i = index">
-        <p>{{detalles}}</p>
-        <button (click)="deletePerson(i)">Eliminar</button>
+<section id="containerPrincipal">
+
+    <div id="listClients">
+
+        <section id="tarjetaDefault">
+            <p id="textDefault">Servicio</p>
+            <p id="textDefault">Identificación</p>
+            <p id="textDefault">Nombre</p>
+            <p id="textDefault">Télefono</p>
+        </section>
+
+        <div *ngIf="data; else dataExists">
+            <h1>No hay clientes para mostrar</h1>
+        </div>
+
+        <!-- Leer -->
+        <ng-template #dataExists>
+            <div *ngFor="let detalles of listPeople,let i = index" class="tarjeta">
+
+                <button (click)="updateInputs(i)">
+                    <p>{{detalles[0]}}</p>
+                    <p>{{detalles[1]}}</p>
+                    <p>{{detalles[2]}}</p>
+                    <p>{{detalles[3]}}</p>
+                </button>
+
+            </div>
+        </ng-template>
     </div>
-</ng-template>
 
-<h2>Crear cliente</h2>
+    <div id="clientSelected">
 
-<input [(ngModel)]="inputValue1" placeholder="Servicio" />
-<input [(ngModel)]="inputValue2" placeholder="Identificación" />
-<input [(ngModel)]="inputValue3" placeholder="Nombre" />
-<input [(ngModel)]="inputValue4" placeholder="Dirección" />
-<button (click)="createData()">Guardar</button>
+        <section id="contInfo">
+
+            <!-- Agregar -->
+            <section id="AddClient">
+                <h3>Crear cliente</h3>
+                <input [(ngModel)]="inputCreate1" placeholder="Servicio" />
+                <input [(ngModel)]="inputCreate2" placeholder="Identificación" />
+                <input [(ngModel)]="inputCreate3" placeholder="Nombre" />
+                <input [(ngModel)]="inputCreate4" placeholder="Télefono" />
+                <button (click)="createData()">Guardar</button>
+            </section>
+
+            <!-- Actualizar y Eliminar-->
+            <section id="UpdateClient">
+                <h3>Selecciona un cliente para gestionar</h3>
+                <input [(ngModel)]="manageInput1" placeholder="Servicio" />
+                <input [(ngModel)]="manageInput2" placeholder="Identificación" />
+                <input [(ngModel)]="manageInput3" placeholder="Nombre" />
+                <input [(ngModel)]="manageInput4" placeholder="Télefono" />
+                <button (click)="updateData()">Actualizar</button>
+                <button (click)="deleteData()">Eliminar</button>
+            </section>
+
+        </section>
+
+    </div>
+</section>

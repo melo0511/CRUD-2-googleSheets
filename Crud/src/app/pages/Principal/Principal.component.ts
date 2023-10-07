@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core"
 import { PeopleService } from "./services/people.service";
-import { tap } from "rxjs";
 
 @Component({
     selector: 'app-Principal',
@@ -10,12 +9,19 @@ import { tap } from "rxjs";
 
 export class PrincipalComponent implements OnInit {
     public listPeople: any = [];
+    private tempArray: any = []
     data: boolean = false;
+    posicionActual: number = 0
 
-    public inputValue1: string = '';
-    public inputValue2: string = '';
-    public inputValue3: string = '';
-    public inputValue4: string = '';
+    public inputCreate1: string = '';
+    public inputCreate2: string = '';
+    public inputCreate3: string = '';
+    public inputCreate4: string = '';
+
+    public manageInput1: string = '';
+    public manageInput2: string = '';
+    public manageInput3: string = '';
+    public manageInput4: string = '';
 
     constructor(private peopleSvc: PeopleService) { }
 
@@ -23,9 +29,22 @@ export class PrincipalComponent implements OnInit {
         this.loadData();
     }
 
+    //////////Metodos//////////
+
     //Cargar usuarios
 
     public loadData() {
+
+        this.inputCreate1 = ""
+        this.inputCreate2 = ""
+        this.inputCreate3 = ""
+        this.inputCreate4 = ""
+
+        this.manageInput1 = ""
+        this.manageInput2 = ""
+        this.manageInput3 = ""
+        this.manageInput4 = ""
+
         this.peopleSvc.get(`http://localhost:3000/api/data`).subscribe(res => {
             this.listPeople = res;
             console.log(res);
@@ -37,16 +56,16 @@ export class PrincipalComponent implements OnInit {
 
     public createData() {
 
-        const objetoGuardado = {
-            valor1: this.inputValue1,
-            valor2: this.inputValue2,
-            valor3: this.inputValue3,
-            valor4: this.inputValue4
+        const createObject = {
+            valor1: this.inputCreate1,
+            valor2: this.inputCreate2,
+            valor3: this.inputCreate3,
+            valor4: this.inputCreate4
         };
 
-        console.log('Objeto guardado:', objetoGuardado);
+        console.log('Objeto guardado:', createObject);
 
-        this.peopleSvc.post('http://localhost:3000/api/send', objetoGuardado)
+        this.peopleSvc.post('http://localhost:3000/api/send', createObject)
             .subscribe(res => {
                 console.log("Cliente creado");
                 this.loadData()
@@ -55,12 +74,49 @@ export class PrincipalComponent implements OnInit {
 
     //Actualizar usuarios
 
+    public updateData() {
+
+        let index = this.posicionActual
+
+        const updateObject = {
+            valor1: this.manageInput1,
+            valor2: this.manageInput2,
+            valor3: this.manageInput3,
+            valor4: this.manageInput4
+        };
+
+        const apiUrl = `http://localhost:3000/api/update/${index}`;
+        this.peopleSvc.put(apiUrl, updateObject).subscribe(
+          (res) => {
+            console.log('Persona actualizada con éxito', res);
+            this.loadData()
+          }
+        );
+      }
+
     //Eliminar usuarios
-    
-    public deletePerson(index: number) {
+
+    public deleteData() {
+
+        let index = this.posicionActual
 
         this.peopleSvc.delete(`http://localhost:3000/api/delete/${index}`).subscribe(() => {
             this.loadData()
         });
+    }
+
+    ////////Demas logica////////
+
+    //Actualizar inputs
+
+    public updateInputs(i: number) {
+        this.posicionActual = i
+        this.tempArray = ""
+        this.tempArray = this.listPeople[i]
+        this.manageInput1 = this.tempArray[0]
+        this.manageInput2 = this.tempArray[1]
+        this.manageInput3 = this.tempArray[2]
+        this.manageInput4 = this.tempArray[3]
+        this.posicionActual = i
     }
 }

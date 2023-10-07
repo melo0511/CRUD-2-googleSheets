@@ -1,15 +1,12 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const {
-    google
-} = require('googleapis');
+const { google } = require('googleapis');
 const credentials = require('./credentials.json');
 const cors = require('cors');
 
 const app = express();
 app.use(cors());
 const port = 3000;
-
 app.use(bodyParser.json());
 
 const sheets = google.sheets('v4');
@@ -29,7 +26,7 @@ app.get('/api/data', async (req, res) => {
         const response = await sheets.spreadsheets.values.get({
             auth: client,
             spreadsheetId: sheetId,
-            range: 'crudBitwan!A2:D' 
+            range: 'crudBitwan!A2:D'
         });
         res.json(response.data.values);
     } catch (error) {
@@ -42,14 +39,14 @@ app.get('/api/data', async (req, res) => {
 
 app.post('/api/send', async (req, res) => {
     const newData = req.body;
-    
+
     try {
-        console.log("Nuevos Datos",newData);
+        console.log("Nuevos Datos", newData);
         await client.authorize();
         const response = await sheets.spreadsheets.values.append({
             auth: client,
             spreadsheetId: sheetId,
-            range: 'crudBitwan!A2:D', 
+            range: 'crudBitwan!A2:D',
             valueInputOption: 'RAW',
             insertDataOption: 'INSERT_ROWS',
             resource: {
@@ -58,17 +55,43 @@ app.post('/api/send', async (req, res) => {
         });
         res.json(response.data);
     } catch (error) {
-        console.error(error); 
+        console.error(error);
         res.status(500).send('Error adding data');
     }
 });
 
-//Update
+//Actualizar
+
+app.put('/api/update/:id', async (req, res) => {
+    const rowId = parseInt(req.params.id) + 2;
+    if (isNaN(rowId)) {
+        return res.status(400).send('ID debe ser un número entero');
+    }
+
+    const updatedData = req.body;
+
+    try {
+        await client.authorize();
+        const response = await sheets.spreadsheets.values.update({
+            auth: client,
+            spreadsheetId: sheetId,
+            range: `crudBitwan!A${rowId}:D${rowId}`,
+            valueInputOption: 'RAW',
+            resource: {
+                values: [Object.values(updatedData)]
+            }
+        });
+        res.json(response.data);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error actualizando datos');
+    }
+});
 
 //Eliminar
 
 app.delete('/api/delete/:id', async (req, res) => {
-    const rowId = parseInt(req.params.id)+2;
+    const rowId = parseInt(req.params.id) + 2;
     if (isNaN(rowId)) {
         return res.status(400).send('ID debe ser un número entero');
     }
@@ -99,8 +122,6 @@ app.delete('/api/delete/:id', async (req, res) => {
         res.status(500).send('Error eliminando la fila');
     }
 });
-
-
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

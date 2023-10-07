@@ -1,13 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { People } from '../Interfaces/people.interface'
 
 @Injectable({
   providedIn: 'root'
 })
 export class PeopleService {
-  private apiUrl = 'http://localhost:3000/api'
   
   constructor(private http: HttpClient) { }
 
@@ -17,6 +15,10 @@ export class PeopleService {
 
   post(url: string, data: any): Observable<any> {
     return this.http.post(url, data);
+  }
+
+  public put(url: string, data: any): Observable<any> {
+    return this.http.put(url, data);
   }
 
   public delete(url: string): Observable<any> {
