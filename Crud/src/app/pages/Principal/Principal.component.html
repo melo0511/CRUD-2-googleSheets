@@ -4,7 +4,22 @@
         alt="">
 </header>
 
+<section *ngIf="showConfirmation" id="contPrincipalConf">
+    <div id="containerConfirmation">
+        <p>¿Desea eliminar al cliente "{{userUpdate}}"?</p>
+        <div id="containerBtn">
+            <button id="btnConfirm" (click)="cancelarConfirmar()">Cancelar</button>
+            <button id="btnCancel" (click)="deleteData()">Confirmar</button>
+        </div>
+    </div>
+</section>
+
 <section id="containerPrincipal">
+
+    <div [id]="showWindow ? 'windowShow' : 'windowHide'">
+        <p>{{newText}}</p>
+        <p>{{newIcon}}</p>
+    </div>
 
     <div id="listClients">
 
@@ -24,10 +39,10 @@
             <div *ngFor="let detalles of listPeople,let i = index" class="tarjeta">
 
                 <button (click)="updateInputs(i)">
-                    <p>{{detalles[0]}}</p>
-                    <p>{{detalles[1]}}</p>
-                    <p>{{detalles[2]}}</p>
-                    <p>{{detalles[3]}}</p>
+                    <p title={{detalles[0]}}>{{detalles[0]}}</p>
+                    <p title={{detalles[1]}}>{{detalles[1]}}</p>
+                    <p title={{detalles[2]}}>{{detalles[2]}}</p>
+                    <p title={{detalles[3]}}>{{detalles[3]}}</p>
                 </button>
 
             </div>
@@ -41,22 +56,24 @@
             <!-- Agregar -->
             <section id="AddClient">
                 <h3>Crear cliente</h3>
-                <input [(ngModel)]="inputCreate1" placeholder="Servicio" />
-                <input [(ngModel)]="inputCreate2" placeholder="Identificación" />
-                <input [(ngModel)]="inputCreate3" placeholder="Nombre" />
-                <input [(ngModel)]="inputCreate4" placeholder="Télefono" />
+                <input [(ngModel)]="inputCreate1" placeholder="Servicio" (input)="limitarLongitud($event,9)" />
+                <input [(ngModel)]="inputCreate2" placeholder="Identificación" (input)="limitarLongitud($event,9)" />
+                <input type="text" [(ngModel)]="inputCreate3" placeholder="Nombre"
+                    (input)="limitarLongitud($event,40)" />
+                <input [(ngModel)]="inputCreate4" placeholder="Télefono" (input)="limitarLongitud($event,9)" />
                 <button (click)="createData()">Guardar</button>
             </section>
 
             <!-- Actualizar y Eliminar-->
             <section id="UpdateClient">
                 <h3>Selecciona un cliente para gestionar</h3>
-                <input [(ngModel)]="manageInput1" placeholder="Servicio" />
-                <input [(ngModel)]="manageInput2" placeholder="Identificación" />
-                <input [(ngModel)]="manageInput3" placeholder="Nombre" />
-                <input [(ngModel)]="manageInput4" placeholder="Télefono" />
+                <input [(ngModel)]="manageInput1" placeholder="Servicio" (input)="limitarLongitud($event,9)" />
+                <input [(ngModel)]="manageInput2" placeholder="Identificación" (input)="limitarLongitud($event,9)" />
+                <input type="text" [(ngModel)]="manageInput3" placeholder="Nombre"
+                    (input)="limitarLongitud($event,40)" />
+                <input [(ngModel)]="manageInput4" placeholder="Télefono" (input)="limitarLongitud($event,9)" />
                 <button (click)="updateData()">Actualizar</button>
-                <button (click)="deleteData()">Eliminar</button>
+                <button (click)="confirmar()">Eliminar</button>
             </section>
 
         </section>
