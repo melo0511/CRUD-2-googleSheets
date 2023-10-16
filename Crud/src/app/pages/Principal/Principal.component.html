@@ -56,22 +56,20 @@
             <!-- Agregar -->
             <section id="AddClient">
                 <h3>Crear cliente</h3>
-                <input [(ngModel)]="inputCreate1" placeholder="Servicio" (input)="limitarLongitud($event,9)" />
-                <input [(ngModel)]="inputCreate2" placeholder="Identificación" (input)="limitarLongitud($event,9)" />
-                <input type="text" [(ngModel)]="inputCreate3" placeholder="Nombre"
-                    (input)="limitarLongitud($event,40)" />
-                <input [(ngModel)]="inputCreate4" placeholder="Télefono" (input)="limitarLongitud($event,9)" />
+                <input [(ngModel)]="inputCreate1" placeholder="Servicio"/>
+                <input [(ngModel)]="inputCreate2" placeholder="Identificación"/>
+                <input type="text" [(ngModel)]="inputCreate3" placeholder="Nombre"/>
+                <input [(ngModel)]="inputCreate4" placeholder="Télefono"  />
                 <button (click)="createData()">Guardar</button>
             </section>
 
             <!-- Actualizar y Eliminar-->
             <section id="UpdateClient">
                 <h3>Selecciona un cliente para gestionar</h3>
-                <input [(ngModel)]="manageInput1" placeholder="Servicio" (input)="limitarLongitud($event,9)" />
-                <input [(ngModel)]="manageInput2" placeholder="Identificación" (input)="limitarLongitud($event,9)" />
-                <input type="text" [(ngModel)]="manageInput3" placeholder="Nombre"
-                    (input)="limitarLongitud($event,40)" />
-                <input [(ngModel)]="manageInput4" placeholder="Télefono" (input)="limitarLongitud($event,9)" />
+                <input [(ngModel)]="manageInput1" placeholder="Servicio"  />
+                <input [(ngModel)]="manageInput2" placeholder="Identificación"  />
+                <input type="text" [(ngModel)]="manageInput3" placeholder="Nombre"/>
+                <input [(ngModel)]="manageInput4" placeholder="Télefono"  />
                 <button (click)="updateData()">Actualizar</button>
                 <button (click)="confirmar()">Eliminar</button>
             </section>

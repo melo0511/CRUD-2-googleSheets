@@ -8,6 +8,8 @@ import { PeopleService } from "./services/people.service";
 })
 
 export class PrincipalComponent implements OnInit {
+    apiUrl = "https://back-crud-pq62.onrender.com"
+    apiLocal = "http://localhost:3000"
     public listPeople: any = [];
     public tempArray: any = []
     data: boolean = false;
@@ -56,7 +58,7 @@ export class PrincipalComponent implements OnInit {
         this.manageInput3 = ""
         this.manageInput4 = ""
 
-        this.peopleSvc.get(`http://localhost:3000/api/data`).subscribe(res => {
+        this.peopleSvc.get(`${this.apiUrl}/api/data`).subscribe(res => {
             this.listPeople = res;
             this.data = res === null;
         });
@@ -88,7 +90,7 @@ export class PrincipalComponent implements OnInit {
                 valor4: this.inputCreate4
             };
 
-            this.peopleSvc.post('http://localhost:3000/api/send', createObject)
+            this.peopleSvc.post(`${this.apiUrl}/api/send`, createObject)
                 .subscribe(res => {
                     this.ventanaEmergente("Cliente Creado!", true);
                     this.loadData()
@@ -125,7 +127,7 @@ export class PrincipalComponent implements OnInit {
                 valor4: this.manageInput4
             };
 
-            const apiUrl = `http://localhost:3000/api/update/${index}`;
+            const apiUrl = `${this.apiUrl}/api/update/${index}`;
             this.peopleSvc.put(apiUrl, updateObject).subscribe(
                 (res) => {
                     this.ventanaEmergente("Cliente Actualizado!", true);
@@ -140,7 +142,7 @@ export class PrincipalComponent implements OnInit {
     public deleteData() {
         let index = this.posicionActual
         this.showConfirmation = false
-        this.peopleSvc.delete(`http://localhost:3000/api/delete/${index}`).subscribe(() => {
+        this.peopleSvc.delete(`${this.apiUrl}/api/delete/${index}`).subscribe(() => {
             this.ventanaEmergente("Cliente Eliminado", true);
             this.loadData()
         });
@@ -194,11 +196,5 @@ export class PrincipalComponent implements OnInit {
         cronometro = setTimeout(() => {
             this.showWindow = false
         }, 3500);
-    }
-
-    public limitarLongitud(event: any, maxLength: number) {
-        if (event.target.value.length > maxLength) {
-            event.target.value = event.target.value.slice(0, maxLength);
-        }
     }
 }
