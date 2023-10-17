@@ -1,7 +1,6 @@
 <header>
     <h1>Administración de clientes</h1>
-    <img src="https://res.cloudinary.com/dasuy0gun/image/upload/v1697513804/bitwan/logo-bitwan.png"
-        alt="">
+    <img src="https://res.cloudinary.com/dasuy0gun/image/upload/v1697513804/bitwan/logo-bitwan.png" alt="">
 </header>
 
 <section *ngIf="showConfirmation" id="contPrincipalConf">
@@ -30,7 +29,7 @@
                 <div id="equis">
                     <ng-container *ngIf="inputBusqueda === ''; else clean">
                     </ng-container>
-                    <ng-template #clean >
+                    <ng-template #clean>
                         <img src="https://cdn-icons-png.flaticon.com/512/75/75519.png" alt="">
                     </ng-template>
                 </div>
@@ -40,12 +39,17 @@
 
         </section>
 
-        <section id="tarjetaDefault">
-            <p id="textDefault">Servicio</p>
-            <p id="textDefault">Identificación</p>
-            <p id="textDefault">Nombre</p>
-            <p id="textDefault">Télefono</p>
-        </section>
+        <div *ngIf="data === undefined || data === 'empty' ;else templateDefault">
+        </div>
+
+        <ng-template #templateDefault>
+            <section id="tarjetaDefault">
+                <p id="textDefault">Servicio</p>
+                <p id="textDefault">Identificación</p>
+                <p id="textDefault">Nombre</p>
+                <p id="textDefault">Télefono</p>
+            </section>
+        </ng-template>
 
         <div [ngSwitch]="data" id="dataContainer">
 
@@ -58,13 +62,14 @@
                     <div class="ball"></div>
                     <div class="ball"></div>
                     <div class="ball"></div>
-                  </div>
+                </div>
             </div>
 
             <div id="containerChild" *ngSwitchCase="true">
                 <h1>No hay clientes para mostrar</h1>
             </div>
 
+            <!-- Leer -->
             <!-- Leer -->
             <div id="container1" *ngSwitchCase="false">
                 <div *ngFor="let detalles of listPeople,let i = index" class="tarjeta">
@@ -79,7 +84,7 @@
 
             <div id="container1" *ngSwitchCase=" 'text' ">
                 <div *ngFor="let detalles of listFilter,let i = index" class="tarjeta">
-                    <button (click)="updateInputs(i)">
+                    <button (click)="updateInputsFilter(detalles[1])">
                         <p title={{detalles[0]}}>{{detalles[0]}}</p>
                         <p title={{detalles[1]}}>{{detalles[1]}}</p>
                         <p title={{detalles[2]}}>{{detalles[2]}}</p>

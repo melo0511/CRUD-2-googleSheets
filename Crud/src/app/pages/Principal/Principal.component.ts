@@ -13,6 +13,7 @@ export class PrincipalComponent implements OnInit {
     public listPeople: any = []
     public tempArray: any = []
     listFilter: any[] = []
+    indexArray: string[] = []
     data: any
     posicionActual: number = 0
     showWindow: boolean = false
@@ -49,55 +50,65 @@ export class PrincipalComponent implements OnInit {
     //Cargar usuarios
 
     public loadData() {
-        this.inputCreate1 = ""
-        this.inputCreate2 = ""
-        this.inputCreate3 = ""
-        this.inputCreate4 = ""
+        this.vaciarInputs()
 
-        this.manageInput1 = ""
-        this.manageInput2 = ""
-        this.manageInput3 = ""
-        this.manageInput4 = ""
+        this.inputBusqueda = ""
 
         this.peopleSvc.get(`${this.apiUrl}/api/data`).subscribe(res => {
             this.listPeople = res;
             this.data = res === null;
             this.listFilter = [...this.listPeople];
         });
-        
+
     }
 
     //Crear usuarios
 
     public createData() {
+        let exist = false
 
-        if (this.inputCreate1.length === 0 || this.inputCreate2.length === 0 || this.inputCreate3.length === 0 || this.inputCreate4.length === 0) {
-            this.ventanaEmergente("No se permiten campos vacíos", false);
-        } else if (!this.numeroRegExp.test(this.inputCreate1)) {
-            this.ventanaEmergente("En Servicio solo se permiten números", false)
-        } else if (!this.numeroRegExp.test(this.inputCreate2)) {
-            this.ventanaEmergente("En Identificación solo se permiten números", false)
-        } else if (!this.numeroRegExp.test(this.inputCreate4)) {
-            this.ventanaEmergente("En Télefono solo se permiten números", false)
-        } else if (!this.textoRegExp.test(this.inputCreate3)) {
-            this.ventanaEmergente("En el campo nombre solo se permite texto", false)
-        } else if (this.inputCreate2.length !== 10) {
-            this.ventanaEmergente("Ingrese una identificación valida", false);
-        } else if (this.inputCreate4.length !== 10) {
-            this.ventanaEmergente("Ingrese un télefono valido", false);
-        } else {
-            const createObject = {
-                valor1: this.inputCreate1,
-                valor2: this.inputCreate2,
-                valor3: this.inputCreate3,
-                valor4: this.inputCreate4
-            };
+        this.listPeople.forEach((element: any, i: any) => {
+            if (this.inputCreate1 === element[0]) {
+                this.ventanaEmergente(`El servicio "${this.inputCreate1}" ya existe`, false);
+                exist = true
+            } else if (this.inputCreate2 === element[1]) {
+                this.ventanaEmergente(`La identificación "${this.inputCreate2}" ya existe`, false);
+                exist = true
+            } else if (this.inputCreate4 === element[3]) {
+                this.ventanaEmergente(`El télefono "${this.inputCreate4}" ya existe`, false);
+                exist = true
+            }
+        });
 
-            this.peopleSvc.post(`${this.apiUrl}/api/send`, createObject)
-                .subscribe(res => {
-                    this.ventanaEmergente("Cliente Creado!", true);
-                    this.loadData()
-                });
+        if (!exist === true) {
+            if (this.inputCreate1.length === 0 || this.inputCreate2.length === 0 || this.inputCreate3.length === 0 || this.inputCreate4.length === 0) {
+                this.ventanaEmergente("No se permiten campos vacíos", false);
+            } else if (!this.numeroRegExp.test(this.inputCreate1)) {
+                this.ventanaEmergente("En Servicio solo se permiten números", false)
+            } else if (!this.numeroRegExp.test(this.inputCreate2)) {
+                this.ventanaEmergente("En Identificación solo se permiten números", false)
+            } else if (!this.numeroRegExp.test(this.inputCreate4)) {
+                this.ventanaEmergente("En Télefono solo se permiten números", false)
+            } else if (!this.textoRegExp.test(this.inputCreate3)) {
+                this.ventanaEmergente("En el campo nombre solo se permite texto", false)
+            } else if (this.inputCreate2.length !== 10) {
+                this.ventanaEmergente("Ingrese una identificación valida", false);
+            } else if (this.inputCreate4.length !== 10) {
+                this.ventanaEmergente("Ingrese un télefono valido", false);
+            } else {
+                const createObject = {
+                    valor1: this.inputCreate1,
+                    valor2: this.inputCreate2,
+                    valor3: this.inputCreate3,
+                    valor4: this.inputCreate4
+                };
+
+                this.peopleSvc.post(`${this.apiUrl}/api/send`, createObject)
+                    .subscribe(res => {
+                        this.ventanaEmergente("Cliente Creado!", true);
+                        this.loadData()
+                    });
+            }
         }
     }
 
@@ -105,38 +116,50 @@ export class PrincipalComponent implements OnInit {
 
     public updateData() {
 
-        if (this.manageInput1.length === 0 || this.manageInput2.length === 0 || this.manageInput3.length === 0 || this.manageInput4.length === 0) {
-            this.ventanaEmergente("No se permiten campos vacíos", false);
-        } else if (!this.numeroRegExp.test(this.manageInput1)) {
-            this.ventanaEmergente("En Servicio solo se permiten números", false)
-        } else if (!this.numeroRegExp.test(this.manageInput2)) {
-            this.ventanaEmergente("En Identificación solo se permiten números", false)
-        } else if (!this.numeroRegExp.test(this.manageInput4)) {
-            this.ventanaEmergente("En Télefono solo se permiten números", false)
-        } else if (!this.textoRegExp.test(this.manageInput3)) {
-            this.ventanaEmergente("En el campo nombre solo se permite texto", false)
-        } else if (this.manageInput2.length !== 10) {
-            this.ventanaEmergente("Ingrese una identificación valida", false);
-        } else if (this.manageInput4.length !== 10) {
-            this.ventanaEmergente("Ingrese una télefono valido", false);
-        } else {
-            let index = this.posicionActual
+        let exist = false
+        let index = this.posicionActual
 
+        const updateObject: any[] = [
+            this.manageInput1,
+            this.manageInput2,
+            this.manageInput3,
+            this.manageInput4
+        ]
 
-            const updateObject = {
-                valor1: this.manageInput1,
-                valor2: this.manageInput2,
-                valor3: this.manageInput3,
-                valor4: this.manageInput4
-            };
+        let newArray = this.listPeople[index]
 
-            const apiUrl = `${this.apiUrl}/api/update/${index}`;
-            this.peopleSvc.put(apiUrl, updateObject).subscribe(
-                (res) => {
-                    this.ventanaEmergente("Cliente Actualizado!", true);
-                    this.loadData()
-                }
-            );
+        if (newArray[0] === updateObject[0] && newArray[1] === updateObject[1] && newArray[2] === updateObject[2] && newArray[3] === updateObject[3]) {
+            this.ventanaEmergente("Debe cambiar la información para actualizar", false);
+            exist = true
+        }
+
+        console.log(index);
+        
+
+        if (!exist === true) {
+            if (this.manageInput1.length === 0 || this.manageInput2.length === 0 || this.manageInput3.length === 0 || this.manageInput4.length === 0) {
+                this.ventanaEmergente("No se permiten campos vacíos", false);
+            } else if (!this.numeroRegExp.test(this.manageInput1)) {
+                this.ventanaEmergente("En Servicio solo se permiten números", false)
+            } else if (!this.numeroRegExp.test(this.manageInput2)) {
+                this.ventanaEmergente("En Identificación solo se permiten números", false)
+            } else if (!this.numeroRegExp.test(this.manageInput4)) {
+                this.ventanaEmergente("En Télefono solo se permiten números", false)
+            } else if (!this.textoRegExp.test(this.manageInput3)) {
+                this.ventanaEmergente("En el campo nombre solo se permite texto", false)
+            } else if (this.manageInput2.length !== 10) {
+                this.ventanaEmergente("Ingrese una identificación valida", false);
+            } else if (this.manageInput4.length !== 10) {
+                this.ventanaEmergente("Ingrese una télefono valido", false);
+            } else {
+                const apiUrl = `${this.apiUrl}/api/update/${index}`;
+                this.peopleSvc.put(apiUrl, updateObject).subscribe(
+                    (res) => {
+                        this.ventanaEmergente("Cliente Actualizado!", true);
+                        this.loadData()
+                    }
+                );
+            }
         }
     }
 
@@ -172,7 +195,7 @@ export class PrincipalComponent implements OnInit {
 
     //Actualizar inputs
 
-    public updateInputs(i: number) {
+    public updateInputs(i: any) {
         this.posicionActual = i
         this.tempArray = ""
         this.tempArray = this.listPeople[i]
@@ -181,7 +204,20 @@ export class PrincipalComponent implements OnInit {
         this.manageInput3 = this.tempArray[2]
         this.manageInput4 = this.tempArray[3]
         this.posicionActual = i
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    public updateInputsFilter(id: string) {
+        this.listPeople.forEach((element: any, i: any) => {
+            if (element[1] === id) {
+                this.indexArray = this.listPeople[i];
+                this.posicionActual = i
+            }
+            i++
+        });
+        this.manageInput1 = this.indexArray[0]
+        this.manageInput2 = this.indexArray[1]
+        this.manageInput3 = this.indexArray[2]
+        this.manageInput4 = this.indexArray[3]
     }
 
     //Ventana emergente
@@ -205,6 +241,8 @@ export class PrincipalComponent implements OnInit {
     //Filtrar busqueda
 
     public filtrarBusqueda(event: any) {
+        this.vaciarInputs()
+
         let newEvent = event.target.value;
         if (newEvent === "") {
             this.data = false
@@ -213,14 +251,13 @@ export class PrincipalComponent implements OnInit {
             this.listFilter = this.listPeople.filter((detalles: any) =>
                 Object.values(detalles).some(val => {
                     if (typeof val === "string") {
-                        console.log(this.listFilter);
                         return val.toLowerCase().includes(this.inputBusqueda.toLowerCase());
                     }
-                    return false;  
+                    return false;
                 })
             );
         }
-        if(this.listFilter.length === 0){
+        if (this.listFilter.length === 0) {
             this.data = "empty"
         }
     }
@@ -230,6 +267,18 @@ export class PrincipalComponent implements OnInit {
     public vaciarBusqueda() {
         this.inputBusqueda = ""
         this.data = false
+    }
+
+    public vaciarInputs(){
+        this.inputCreate1 = ""
+        this.inputCreate2 = ""
+        this.inputCreate3 = ""
+        this.inputCreate4 = ""
+
+        this.manageInput1 = ""
+        this.manageInput2 = ""
+        this.manageInput3 = ""
+        this.manageInput4 = ""
     }
 
 }
