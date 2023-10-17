@@ -1,6 +1,6 @@
 <header>
     <h1>Administración de clientes</h1>
-    <img src="https://static.wixstatic.com/media/632b1b_7a7cfc03c37641d08c03c1e93378328d~mv2.png/v1/fill/w_900,h_589,al_c/632b1b_7a7cfc03c37641d08c03c1e93378328d~mv2.png"
+    <img src="https://res.cloudinary.com/dasuy0gun/image/upload/v1697513804/bitwan/logo-bitwan.png"
         alt="">
 </header>
 
@@ -23,6 +23,23 @@
 
     <div id="listClients">
 
+        <section id="filterPrincipal">
+            <input type="text" placeholder="Buscar cliente" [(ngModel)]="inputBusqueda"
+                (input)="filtrarBusqueda($event)" />
+            <button (click)="vaciarBusqueda()" id="iconSearch" *ngIf="data != ''; else empty">
+                <div id="equis">
+                    <ng-container *ngIf="inputBusqueda === ''; else clean">
+                    </ng-container>
+                    <ng-template #clean >
+                        <img src="https://cdn-icons-png.flaticon.com/512/75/75519.png" alt="">
+                    </ng-template>
+                </div>
+            </button>
+
+            <ng-template #empty></ng-template>
+
+        </section>
+
         <section id="tarjetaDefault">
             <p id="textDefault">Servicio</p>
             <p id="textDefault">Identificación</p>
@@ -30,23 +47,53 @@
             <p id="textDefault">Télefono</p>
         </section>
 
-        <div *ngIf="data; else dataExists">
-            <h1>No hay clientes para mostrar</h1>
+        <div [ngSwitch]="data" id="dataContainer">
+
+            <div id="container1" *ngSwitchCase="undefined">
+                <div class="containerBalls">
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                    <div class="ball"></div>
+                  </div>
+            </div>
+
+            <div id="containerChild" *ngSwitchCase="true">
+                <h1>No hay clientes para mostrar</h1>
+            </div>
+
+            <!-- Leer -->
+            <div id="container1" *ngSwitchCase="false">
+                <div *ngFor="let detalles of listPeople,let i = index" class="tarjeta">
+                    <button (click)="updateInputs(i)">
+                        <p title={{detalles[0]}}>{{detalles[0]}}</p>
+                        <p title={{detalles[1]}}>{{detalles[1]}}</p>
+                        <p title={{detalles[2]}}>{{detalles[2]}}</p>
+                        <p title={{detalles[3]}}>{{detalles[3]}}</p>
+                    </button>
+                </div>
+            </div>
+
+            <div id="container1" *ngSwitchCase=" 'text' ">
+                <div *ngFor="let detalles of listFilter,let i = index" class="tarjeta">
+                    <button (click)="updateInputs(i)">
+                        <p title={{detalles[0]}}>{{detalles[0]}}</p>
+                        <p title={{detalles[1]}}>{{detalles[1]}}</p>
+                        <p title={{detalles[2]}}>{{detalles[2]}}</p>
+                        <p title={{detalles[3]}}>{{detalles[3]}}</p>
+                    </button>
+                </div>
+            </div>
+
+            <div id="container1" *ngSwitchCase=" 'empty' ">
+                <p>No se encontraron resultados</p>
+            </div>
+
         </div>
 
-        <!-- Leer -->
-        <ng-template #dataExists>
-            <div *ngFor="let detalles of listPeople,let i = index" class="tarjeta">
-
-                <button (click)="updateInputs(i)">
-                    <p title={{detalles[0]}}>{{detalles[0]}}</p>
-                    <p title={{detalles[1]}}>{{detalles[1]}}</p>
-                    <p title={{detalles[2]}}>{{detalles[2]}}</p>
-                    <p title={{detalles[3]}}>{{detalles[3]}}</p>
-                </button>
-
-            </div>
-        </ng-template>
     </div>
 
     <div id="clientSelected">
@@ -56,20 +103,20 @@
             <!-- Agregar -->
             <section id="AddClient">
                 <h3>Crear cliente</h3>
-                <input [(ngModel)]="inputCreate1" placeholder="Servicio"/>
-                <input [(ngModel)]="inputCreate2" placeholder="Identificación"/>
-                <input type="text" [(ngModel)]="inputCreate3" placeholder="Nombre"/>
-                <input [(ngModel)]="inputCreate4" placeholder="Télefono"  />
+                <input [(ngModel)]="inputCreate1" placeholder="Servicio" />
+                <input [(ngModel)]="inputCreate2" placeholder="Identificación" />
+                <input type="text" [(ngModel)]="inputCreate3" placeholder="Nombre" />
+                <input [(ngModel)]="inputCreate4" placeholder="Télefono" />
                 <button (click)="createData()">Guardar</button>
             </section>
 
             <!-- Actualizar y Eliminar-->
             <section id="UpdateClient">
                 <h3>Selecciona un cliente para gestionar</h3>
-                <input [(ngModel)]="manageInput1" placeholder="Servicio"  />
-                <input [(ngModel)]="manageInput2" placeholder="Identificación"  />
-                <input type="text" [(ngModel)]="manageInput3" placeholder="Nombre"/>
-                <input [(ngModel)]="manageInput4" placeholder="Télefono"  />
+                <input [(ngModel)]="manageInput1" placeholder="Servicio" />
+                <input [(ngModel)]="manageInput2" placeholder="Identificación" />
+                <input type="text" [(ngModel)]="manageInput3" placeholder="Nombre" />
+                <input [(ngModel)]="manageInput4" placeholder="Télefono" />
                 <button (click)="updateData()">Actualizar</button>
                 <button (click)="confirmar()">Eliminar</button>
             </section>
@@ -77,4 +124,5 @@
         </section>
 
     </div>
+
 </section>

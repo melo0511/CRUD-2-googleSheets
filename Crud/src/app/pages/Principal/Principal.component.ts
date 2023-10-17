@@ -10,9 +10,10 @@ import { PeopleService } from "./services/people.service";
 export class PrincipalComponent implements OnInit {
     apiUrl = "https://back-crud-pq62.onrender.com"
     apiLocal = "http://localhost:3000"
-    public listPeople: any = [];
+    public listPeople: any = []
     public tempArray: any = []
-    data: boolean = false;
+    listFilter: any[] = []
+    data: any
     posicionActual: number = 0
     showWindow: boolean = false
     showConfirmation: boolean = false
@@ -20,8 +21,9 @@ export class PrincipalComponent implements OnInit {
     newValue = false
     newIcon = ""
     userUpdate = ""
+    inputBusqueda = ""
     //Expresión regular que solo permite texto
-    textoRegExp = /^[A-Za-z\s]+$/;
+    textoRegExp = /^[A-Za-z\s]+$/
     //Expresión regular que solo permite números
     numeroRegExp = /^[0-9]+$/
 
@@ -47,7 +49,6 @@ export class PrincipalComponent implements OnInit {
     //Cargar usuarios
 
     public loadData() {
-
         this.inputCreate1 = ""
         this.inputCreate2 = ""
         this.inputCreate3 = ""
@@ -61,7 +62,9 @@ export class PrincipalComponent implements OnInit {
         this.peopleSvc.get(`${this.apiUrl}/api/data`).subscribe(res => {
             this.listPeople = res;
             this.data = res === null;
+            this.listFilter = [...this.listPeople];
         });
+        
     }
 
     //Crear usuarios
@@ -178,6 +181,7 @@ export class PrincipalComponent implements OnInit {
         this.manageInput3 = this.tempArray[2]
         this.manageInput4 = this.tempArray[3]
         this.posicionActual = i
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     //Ventana emergente
@@ -197,4 +201,35 @@ export class PrincipalComponent implements OnInit {
             this.showWindow = false
         }, 3500);
     }
+
+    //Filtrar busqueda
+
+    public filtrarBusqueda(event: any) {
+        let newEvent = event.target.value;
+        if (newEvent === "") {
+            this.data = false
+        } else {
+            this.data = "text"
+            this.listFilter = this.listPeople.filter((detalles: any) =>
+                Object.values(detalles).some(val => {
+                    if (typeof val === "string") {
+                        console.log(this.listFilter);
+                        return val.toLowerCase().includes(this.inputBusqueda.toLowerCase());
+                    }
+                    return false;  
+                })
+            );
+        }
+        if(this.listFilter.length === 0){
+            this.data = "empty"
+        }
+    }
+
+    //Vaciar input
+
+    public vaciarBusqueda() {
+        this.inputBusqueda = ""
+        this.data = false
+    }
+
 }
